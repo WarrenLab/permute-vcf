@@ -29,9 +29,12 @@ def get_contig_position(
 
     # TODO do a binary search instead of a linear search
     # this will speed things up!
+    previous_contig, previous_offset = "", 0
     for contig, offset in offsets:
-        if offset < position:
-            return (contig, offset)
+        if offset >= position:
+            return (previous_contig, position - previous_offset)
+        else:
+            previous_contig, previous_offset = contig, offset
 
     raise ContigNotFoundError()  # TODO actually make a nice error message
 
@@ -115,11 +118,11 @@ class ContigsTable:
             be used by get_contig_position to convert an integer in the
             range [1, possible_positions] into a genomic coordinate.
         """
-        start_position = 1
+        start_position = 0
         offsets = []
         for contig, length in self.contig_lengths.items():
             if min_3p_dist <= length:  # can't have an SV bigger than the contig!
                 offsets.append((contig, start_position))
                 start_position += length - min_3p_dist
 
-        return (start_position - 1, offsets)
+        return (start_position, offsets)
