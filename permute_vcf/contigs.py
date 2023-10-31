@@ -27,15 +27,17 @@ def get_contig_position(
         contig of the raw input position
     """
 
-    # TODO do a binary search instead of a linear search
-    # this will speed things up!
-    previous_contig, previous_offset = "", 0
-    for contig, offset in offsets:
-        if offset >= position:
-            return (previous_contig, position - previous_offset)
-        else:
-            previous_contig, previous_offset = contig, offset
-    return (previous_contig, position - previous_offset)
+    # do a binary search
+    i_low, i, i_high = 0, len(offsets) // 2, len(offsets)
+    while i != len(offsets) - 1:
+        if offsets[i][1] < position and position <= offsets[i + 1][1]:
+            return (offsets[i][0], position - offsets[i][1])
+        if offsets[i][1] >= position:
+            i_high = i
+        elif offsets[i + 1][1] < position:
+            i_low = i
+        i = i_low + (i_high - i_low) // 2
+    return (offsets[i][0], position - offsets[i][1])
 
 
 class ContigsTable:
