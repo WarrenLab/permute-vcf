@@ -23,8 +23,8 @@ cd permute-vcf
 pip install .
 ```
 
-[pyvcf-bug]: https://github.com/dridk/PyVCF3/issues/6 [pyvcf]:
-https://github.com/dridk/PyVCF3
+[pyvcf-bug]: https://github.com/dridk/PyVCF3/issues/6
+[pyvcf]: https://github.com/dridk/PyVCF3
 
 ## Usage
 
