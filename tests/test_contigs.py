@@ -56,12 +56,34 @@ def test_large_offset():
     assert offsets[5] == ("chr7", sum(i * 100 - offset for i in range(2, 7)))
 
 
+PER_ROUND = 5
+PER_TEST = 10
+
+
+@pytest.mark.parametrize("offset", [(0), (40), (300)])
 def test_sample(offset):
     contigs_table = make_contigs_table()
-    contigs_table.total_length * 100
 
-    contigs_table.sample(
-        min_3p_dist=offset, permutations=contigs_table.total_length * 100
+    possible_positions = contigs_table._make_offsets(min_3p_dist=offset)[0]
+
+    positions = set()
+    for i in range(PER_TEST):
+        new_positions = set(
+            contigs_table.sample(
+                min_3p_dist=offset, permutations=possible_positions * PER_ROUND
+            )
+        )
+        for position in new_positions:  # make sure each new position is valid
+            assert position[1] >= 1
+            assert position[1] <= contigs_table.contig_lengths[position[0]] - offset
+        positions |= new_positions
+        if len(positions) == possible_positions:
+            return  # filled up all positions
+
+    pytest.fail(
+        "Ran {} permutations without filling up {} positions".format(
+            possible_positions * PER_ROUND * PER_TEST, possible_positions
+        )
     )
 
 

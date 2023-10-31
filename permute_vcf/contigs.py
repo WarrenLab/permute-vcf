@@ -35,8 +35,7 @@ def get_contig_position(
             return (previous_contig, position - previous_offset)
         else:
             previous_contig, previous_offset = contig, offset
-
-    raise ContigNotFoundError()  # TODO actually make a nice error message
+    return (previous_contig, position - previous_offset)
 
 
 class ContigsTable:
