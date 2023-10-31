@@ -45,14 +45,13 @@ def main():
 
     # prepare a contigs table for sampling by reading the header
     contigs_table = ContigsTable(args.input_vcf)
-    print(contigs_table.sample())
 
     # open a VCF writer for each permuation
     out_vcfs = []
     for permutation in range(args.permutations):
         out_vcfs.append(
             vcf.Writer(
-                gzip.open(join(args.output_directory, f"{permutation}.vcf.gz"), "w"),
+                gzip.open(join(args.output_directory, f"{permutation}.vcf.gz"), "wt"),
                 args.input_vcf,  # this copies input header to output files
             )
         )
@@ -71,7 +70,7 @@ def main():
 
         for permutation, random_position in enumerate(random_positions):
             record.CHROM, record.POS = random_position
-            out_vcfs[permutation].write(record)
+            out_vcfs[permutation].write_record(record)
 
 
 if __name__ == "__main__":
