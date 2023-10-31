@@ -60,7 +60,7 @@ def main():
     for record in args.input_vcf:
         sv_size = min(len(alt) for alt in record.ALT) - len(record.REF)
         if sv_size < 0:  # deletion
-            min_3p_dist = sv_size
+            min_3p_dist = -sv_size
         else:
             min_3p_dist = 0
 
